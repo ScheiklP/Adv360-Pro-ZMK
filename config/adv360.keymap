@@ -57,6 +57,12 @@
 #define DE_PIPE_MAC LA(N7)
 #define DE_TILD_MAC LA(N)
 
+// Mac different base keys
+#define DE_LABK_MAC GRAVE
+#define DE_RABK_MAC LS(GRAVE)
+#define DE_CIRC_MAC NUBS
+#define DE_DEG_MAC LS(NUBS)
+
 #define BASE_LINUX 0
 #define BASE_MAC 1
 #define SYM_LINUX 2
@@ -144,7 +150,7 @@
             display-name = "SymM";
             bindings = <
                 &kp ESC   &kp F1      &kp F2      &kp F3      &kp F4      &kp F5 &trans                                                               &trans &kp F6      &kp F7      &kp F8      &kp F9      &kp F10     &kp BSPC
-                &kp ESC   &trans      &kp DE_UNDS &kp DE_LBRC_MAC &kp DE_RBRC_MAC &kp DE_DEG &none                                                    &none  &kp DE_EXLM &kp DE_LABK &kp DE_RABK &kp DE_EQL  &kp DE_AMPR &kp DE_ACUT
+                &kp ESC   &trans      &kp DE_UNDS &kp DE_LBRC_MAC &kp DE_RBRC_MAC &kp DE_DEG_MAC &none                                                &none  &kp DE_EXLM &kp DE_LABK_MAC &kp DE_RABK_MAC &kp DE_EQL  &kp DE_AMPR &kp DE_ACUT
                 &kp TAB   &kp DE_BSLS_MAC &kp DE_SLSH &kp DE_LCBR_MAC &kp DE_RCBR_MAC &kp DE_ASTR &none       &trans    &trans    &trans    &trans    &none  &kp DE_QUES &kp DE_LPRN &kp DE_RPRN &kp DE_MINS &kp DE_COLN &kp DE_AT_MAC
                 &trans  &kp DE_HASH &kp DE_DLR  &kp DE_PIPE_MAC &kp DE_TILD_MAC &kp DE_GRV                        &trans    &trans                          &kp DE_PLUS &kp DE_PERC &kp DE_DQUO &kp DE_QUOT &kp DE_SCLN &kp RSHFT
                 &kp LSHFT    &trans      &trans      &trans      &trans                      &trans  &td_cpc_mac &trans  &trans    &trans &trans                           &trans      &trans      &trans      &trans      &trans
