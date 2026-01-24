@@ -63,12 +63,16 @@
 #define DE_CIRC_MAC NUBS
 #define DE_DEG_MAC LS(NUBS)
 
-#define BASE_LINUX 0
-#define BASE_MAC 1
-#define SYM_LINUX 2
-#define SYM_MAC 3
-#define NAV 4
-#define MOD 5
+// Layer indices
+#define DEFAULT 0
+#define KEYPAD 1
+#define FN 2
+#define MOD 3
+#define BONE_LINUX 4
+#define BONE_MAC 5
+#define SYM_LINUX 6
+#define SYM_MAC 7
+#define NAV 8
 
 // Auto-shift macros: tap = lowercase, hold = shifted
 #define AS(k) &as LS(k) k
@@ -78,12 +82,17 @@
         linux_mode: linux_mode {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&bt BT_SEL 0>, <&to BASE_LINUX>;
+            bindings = <&bt BT_SEL 0>, <&to BONE_LINUX>;
         };
         mac_mode: mac_mode {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&bt BT_SEL 1>, <&to BASE_MAC>;
+            bindings = <&bt BT_SEL 1>, <&to BONE_MAC>;
+        };
+        default_mode: default_mode {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&to DEFAULT>;
         };
     };
 
@@ -113,7 +122,56 @@
     keymap {
         compatible = "zmk,keymap";
 
-        base_linux {
+        // Layer 0: Stock QWERTY
+        default_layer {
+            display-name = "Base";
+            bindings = <
+                &kp EQUAL &kp N1    &kp N2   &kp N3   &kp N4     &kp N5 &tog KEYPAD                                                       &mo MOD &kp N6 &kp N7 &kp N8    &kp N9   &kp N0   &kp MINUS
+                &kp TAB   &kp Q     &kp W    &kp E    &kp R      &kp T  &none                                                             &none   &kp Y  &kp U  &kp I     &kp O    &kp P    &kp BSLH
+                &kp ESC   &kp A     &kp S    &kp D    &kp F      &kp G  &none           &kp LCTRL &kp LALT &kp LGUI  &kp RCTRL            &none   &kp H  &kp J  &kp K     &kp L    &kp SEMI &kp SQT
+                &kp LSHFT &kp Z     &kp X    &kp C    &kp V      &kp B                            &kp HOME &kp PG_UP                              &kp N  &kp M  &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
+                &mo FN    &kp GRAVE &kp CAPS &kp LEFT &kp RIGHT                &kp BSPC &kp DEL   &kp END  &kp PG_DN &kp ENTER &kp SPACE                 &kp UP &kp DOWN  &kp LBKT &kp RBKT &mo FN
+            >;
+        };
+
+        // Layer 1: Stock Keypad
+        keypad {
+            display-name = "Kp";
+            bindings = <
+                &kp EQUAL &kp N1    &kp N2   &kp N3   &kp N4     &kp N5 &trans                                                            &mo MOD &kp N6 &kp KP_NUM &kp KP_EQUAL &kp KP_DIVIDE &kp KP_MULTIPLY &kp MINUS
+                &kp TAB   &kp Q     &kp W    &kp E    &kp R      &kp T  &none                                                             &none   &kp Y  &kp KP_N7  &kp KP_N8    &kp KP_N9     &kp KP_MINUS    &kp BSLH
+                &kp ESC   &kp A     &kp S    &kp D    &kp F      &kp G  &none           &kp LCTRL &kp LALT &kp LGUI  &kp RCTRL            &none   &kp H  &kp KP_N4  &kp KP_N5    &kp KP_N6     &kp KP_PLUS     &kp SQT
+                &kp LSHFT &kp Z     &kp X    &kp C    &kp V      &kp B                            &kp HOME &kp PG_UP                              &kp N  &kp KP_N1  &kp KP_N2    &kp KP_N3     &kp KP_ENTER    &kp RSHFT
+                &mo FN    &kp GRAVE &kp CAPS &kp LEFT &kp RIGHT                &kp BSPC &kp DEL   &kp END  &kp PG_DN &kp ENTER &kp KP_N0                 &kp UP     &kp DOWN     &kp KP_DOT    &kp RBKT        &mo FN
+            >;
+        };
+
+        // Layer 2: Stock Fn
+        fn {
+            display-name = "Fn";
+            bindings = <
+                &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &tog KEYPAD                                                &mo MOD &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
+                &trans &trans &trans &trans &trans &trans  &none                                                     &none   &trans &trans &trans &trans  &trans  &trans
+                &trans &trans &trans &trans &trans &trans  &none        &trans &trans &trans &trans                  &none   &trans &trans &trans &trans  &trans  &trans
+                &trans &trans &trans &trans &trans &trans                      &trans &trans                                 &trans &trans &trans &trans  &trans  &trans
+                &trans &trans &trans &trans &trans               &trans &trans &trans &trans &trans &trans                          &trans &trans &trans  &trans  &trans
+            >;
+        };
+
+        // Layer 3: Mod - switch between layouts
+        mod_layer {
+            display-name = "Mod";
+            bindings = <
+                &none &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &none                                                          &trans      &none &none      &none      &none &none &none
+                &none &linux_mode  &mac_mode    &default_mode &none       &none        &bootloader                                                    &bootloader &none &none      &none      &none &none &none
+                &none &none        &none        &none        &none        &none        &none             &none &none &bt BT_CLR &none                  &none       &none &none      &none      &none &none &none
+                &none &none        &none        &none        &none        &none                                &none &none                                         &none &none      &none      &none &none &none
+                &none &none        &none        &none        &none                               &none &none   &none &none      &bl BL_TOG &rgb_ug RGB_TOG                  &bl BL_INC &bl BL_DEC &none &none &none
+            >;
+        };
+
+        // Layer 4: Bone Linux
+        bone_linux {
             display-name = "Linux";
             bindings = <
                 &kp ESC   &kp N1  &kp N2     &kp N3       &kp N4       &kp N5     &tog MOD                                                                  &mo MOD &kp N6  &kp N7  &kp N8     &kp N9  &kp N0       &kp BSPC
@@ -124,7 +182,8 @@
             >;
         };
 
-        base_mac {
+        // Layer 5: Bone Mac
+        bone_mac {
             display-name = "Mac";
             bindings = <
                 &kp ESC   &kp N1  &kp N2     &kp N3       &kp N4       &kp N5     &tog MOD                                                                  &mo MOD &kp N6  &kp N7  &kp N8     &kp N9  &kp N0       &kp BSPC
@@ -135,6 +194,7 @@
             >;
         };
 
+        // Layer 6: Symbols Linux
         sym_linux {
             display-name = "Sym";
             bindings = <
@@ -146,6 +206,7 @@
             >;
         };
 
+        // Layer 7: Symbols Mac
         sym_mac {
             display-name = "SymM";
             bindings = <
@@ -157,6 +218,7 @@
             >;
         };
 
+        // Layer 8: Navigation
         nav_layer {
             display-name = "Nav";
             bindings = <
@@ -165,17 +227,6 @@
                 &trans    &kp HOME    &kp LEFT &kp DOWN &kp RIGHT &kp END &none         &trans    &trans    &trans    &trans                         &none  &kp KP_ASTERISK &kp N4 &kp N5 &kp N6    &kp KP_PLUS  &trans
                 &kp LSHFT   &kp ESC     &kp TAB  &kp INS  &kp ENTER &kp LC(DE_Z)                    &trans    &trans                                          &kp N0          &kp N1 &kp N2 &kp N3    &kp KP_DOT   &kp RSHFT
                 &kp CAPS    &trans      &trans   &trans   &trans                    &kp N0 &trans   &trans    &trans    &trans    &trans                                      &trans &trans &trans    &trans       &trans
-            >;
-        };
-
-        mod_layer {
-            display-name = "Mod";
-            bindings = <
-                &none &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &none                                                          &trans      &none &none      &none      &none &none &none
-                &none &linux_mode  &mac_mode    &none        &none        &none        &bootloader                                                    &bootloader &none &none      &none      &none &none &none
-                &studio_unlock &none        &none        &none        &none        &none        &none             &none &none &bt BT_CLR &none                 &none       &none &none      &none      &none &none &none
-                &none &none        &none        &none        &none        &none                                &none &none                                        &none &none      &none      &none &none &none
-                &none &none        &none        &none        &none                               &none &none   &none &none      &bl BL_TOG &rgb_ug RGB_TOG                  &bl BL_INC &bl BL_DEC &none &none &none
             >;
         };
     };
